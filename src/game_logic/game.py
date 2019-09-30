@@ -16,8 +16,9 @@ class game:
         return self._size_y
 
     def _init_board(self):
-        for x in range(0, size_x):
-            for y in range(0, size_y):
+        self._board = {}
+        for x in range(0, self.size_x):
+            for y in range(0, self.size_y):
                 self._board[(x,y)] = 0
 
     def get_case(self, xy):

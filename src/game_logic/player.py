@@ -31,17 +31,17 @@ class player:
 
     def move(self, direction):
         if direction == "up":
-            new_x = self.x - 1
-            new_y = self.y
-        elif direction == "down":
-            new_x = self.x + 1
-            new_y = self.y
-        elif direction == "left":
             new_x = self.x
             new_y = self.y - 1
-        elif direction == "right":
+        elif direction == "down":
             new_x = self.x
             new_y = self.y + 1
+        elif direction == "left":
+            new_x = self.x - 1
+            new_y = self.y
+        elif direction == "right":
+            new_x = self.x + 1
+            new_y = self.y
         case = self._game.get_case((new_x, new_y))
         if case == 0:
             self._game.update_case((new_x, new_y), self._id)
