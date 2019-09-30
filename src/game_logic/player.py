@@ -1,18 +1,15 @@
-class player:
+class Player:
 
-    def __init__(self, id, game):
+    def __init__(self, game, id):
         if id < 1:
              raise("Player creation error, cannot have id < 1")
         self._id = id
         self.case_claimed = 0
         self._game = game
-        if (id == 0):
-            self._x = 0
-            self._y = 0
+        if (id == 1):
+            self.claim_case(0,0)
         else:
-            self._x = 7
-            self._y = 7
-
+            self.claim_case(7,7)
 
     @property
     def x(self):
@@ -42,6 +39,9 @@ class player:
         elif direction == "right":
             new_x = self.x + 1
             new_y = self.y
+        self.claim_case(new_x, new_y)
+
+    def claim_case(self, new_x, new_y):
         case = self._game.get_case((new_x, new_y))
         if case == 0:
             self._game.update_case((new_x, new_y), self._id)
