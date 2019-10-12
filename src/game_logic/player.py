@@ -1,24 +1,28 @@
 class Player:
 
-    def __init__(self, game, id):
-        if id < 1:
-             raise("Player creation error, cannot have id < 1")
-        self._id = id
+    def __init__(self, id, start_x, start_y):
+        self.id = id
+        self.x = start_x
+        self.y = start_y
         self.case_claimed = 0
-        self._game = game
-        if (id == 1):
-            self.claim_case(0,0)
-        else:
-            self.claim_case(7,7)
+
+    '''
+    Properties and setters defined so we can add extra verification if we want to
+    '''
+    @property
+    def xy(self):
+        return (self.x, self.y)
+    @xy.setter
+    def xy(self, new_xy):
+        self.x, self.y = new_xy
 
     @property
     def x(self):
         return self._x
-
     @x.setter
     def x(self, new_x):
         self._x = new_x
-
+    
     @property
     def y(self):
         return self._y
@@ -26,6 +30,21 @@ class Player:
     def y(self, new_y):
         self._y = new_y
 
+    @property
+    def case_claimed(self):
+        return self._case_claimed
+    @case_claimed.setter
+    def case_claimed(self, new_nb):
+        self._case_claimed = new_nb
+
+    '''This method is used to increment the number of case claimed by one'''
+    def add_one_case(self):
+        self.case_claimed += 1
+
+    '''
+        I don't really know what to do here, we're asking the player what he wants to do but how?
+        Feels like an extra layer might be necessary so I'll just use my old method and return the new_x, new_y
+    '''
     def move(self, direction):
         if direction == "up":
             new_x = self.x
@@ -39,13 +58,4 @@ class Player:
         elif direction == "right":
             new_x = self.x + 1
             new_y = self.y
-        self.claim_case(new_x, new_y)
-
-    def claim_case(self, new_x, new_y):
-        case = self._game.get_case((new_x, new_y))
-        if case == 0:
-            self._game.update_case((new_x, new_y), self._id)
-            self.case_claimed += 1
-        if case == self._id or case == 0:
-            self.x = new_x
-            self.y = new_y
+        return (new_x, new_y)
