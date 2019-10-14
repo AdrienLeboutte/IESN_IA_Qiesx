@@ -23,36 +23,47 @@ class Game:
         #Return 0, 1 or 2 if in the limits of the game_board, -1 if out of bound
         return self._board.get(xy, -1)
 
-    def update_case(self, xy, id):
-        self._board[xy] = id
+    def update_case(self, xy, player):
+        self._board[xy] = player.id
 
-    def validate(self, xy, id):
+    def validate(self, xy, player):
         case_value = self.get_case(xy)
-        if case_value != id and case_value != 0:
+        if case_value != player.id and case_value != 0:
             return False
         if case_value == 0:
-            self.update_case(xy, id)
+            self.update_case(xy, player)
+
         return True
 
     def start_game(self):
-        if self.validate((0,0), 1) and self.validate((7,7), 2):
-            self.players = Player(1, 0, 0), Player(2, 7, 7)
+        self.players = Player(1, 0, 0), Player(2, 7, 7)
+        if self.validate((0,0), self.players[0]) and self.validate((self.size_x - 1,self.size_y - 1), self.players[1]):
+            self.players[0].xy = (0,0)
+            self.players[1].xy = (self.size_x - 1, self.size_y - 1)
         else:
             return -1
         self.game_state = 1
         while self.game_state == 1:
             #Player 1's turn
-            p1_xy = self.players[0].move(input("Player 1's move : "))
-            if self.validate(p1_xy, 1):
-                self.players[0].xy = p1_xy
-            #Player 2's turn
-            p2_xy = self.players[1].move(input("Player 2's move : "))
-            if self.validate(p2_xy, 2):
-                self.players[1].xy = p2_xy
+            self.player_turn(self.players[0])
             self.print_board()
+            self.player_turn(self.players[1])
+            self.print_board()
+            
+
+    def player_turn(self, player):
+        p_xy = player.move(input("Player {}'s move : ".format(player.id)))
+        if self.validate(xy=p_xy, player=player):
+            player.xy = p_xy
 
     def print_board(self):
         for y in range (0, self.size_y):
             for x in range(0, self.size_x):
-                print(self.get_case((x, y)), end=" . ")
+                case = self.get_case((x,y))
+                if case == 0:
+                    print(" □ ", end="")
+                elif case == 1:
+                    print(" ◙ ", end="")
+                elif case == 2:
+                    print(" ■ ", end="")
             print("\n")

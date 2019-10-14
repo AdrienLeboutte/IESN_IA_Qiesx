@@ -58,4 +58,7 @@ class Player:
         elif direction == "right":
             new_x = self.x + 1
             new_y = self.y
+        else:
+            new_x = self.x
+            new_y = self.y
         return (new_x, new_y)
