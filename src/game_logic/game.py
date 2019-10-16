@@ -35,6 +35,7 @@ class Game:
         x,y = xy
         zone_right = set()
         zone_left = set()
+        # TODO : check diagonal
         delta = (x - player.x, y - player.y)
         if(x == 0 or x == 7 or self.get_case((x + delta[0], y + delta[1])) == player.id):
             zone_right = self.get_zone((x, y - 1), player.id, set((x,y)))
@@ -92,17 +93,28 @@ class Game:
         - A list of cases that can be claimed by the player, -1 otherwise
     """
     def get_zone(self, xy, id, zone_commune):
-        x_start, y_start = xy
+        x, y = xy
         zone = set()
-        for y in range(y_start - 1, y_start + 2):
-            for x in range(x_start - 1, x_start + 2):
-                if (x,y) not in zone_commune:
-                    id_case = self.get_case((x,y))
-                    if id_case != id and id_case != 0 and id_case != -1:
-                        return -1
-                    if id_case == 0:
-                        zone.add((x,y))
-                        zone_commune.add((x,y))
+        delta = -1
+        # TODO : Function opti here
+        for _ in range(0,2):
+            # Y check
+            if (x, y+delta) not in zone_commune:
+                id_case = self.get_case((x,y + delta))
+                if id_case != -1 and id_case != 0 and id_case != id:
+                    return -1
+                if id_case == 0:
+                    zone_commune.add((x, y + delta))
+                    zone.add((x, y + delta))
+            # X check
+            if (x + delta, y) not in zone_commune:
+                id_case = self.get_case((x + delta,y))
+                if id_case != -1 and id_case != 0 and id_case != id:
+                    return -1
+                if id_case == 0:
+                    zone_commune.add((x + delta, y))
+                    zone.add((x + delta, y))
+            delta = -delta
 
         for case in zone:
             zone_commune = self.get_zone(case, id, zone_commune)
