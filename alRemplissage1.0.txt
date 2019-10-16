@@ -1,0 +1,67 @@
+// Ici je base comme si on était dans un labyrinthe. On dit que pour sortir d'un labyrinthe
+// Il faut toujours tourner à gauche pour trouver la sortie
+// Ici la sortie est en fait le point d'entré, si il arrive à trouver la sortie en tournant
+// toujours a gauche sans trouver de zone ennemie c'est que c'est une zone
+
+module(Comment je bouge;x_depart, y_depart, idJoueur, zone_courante;zone)
+---* Comment je bouge
+y = y_depart - 1
+do while(y <= y_depart + 1)
+x = x_depart - 1
+do while(x <= x_depart + 1)
+if(x != x_depart OR y != y_depart AND (x, y) NOT IN zone_courante)
+idCase = board.getCase(x,y)
+if(idCase != 0 AND idCase != - 1 AND dCase != idJoueur)
+return -1
+endif
+if(idCase == 0)
+zone.append((x,y))
+endif
+endif
+x++
+enddo
+y++
+enddo
+i = 0
+zone_tmp = []
+do while(i < zone.lenght)
+module(Comment je bouge;zone[i][0], zone[i][1], idJoueur, zone;zoneSupplementaire)
+if(zoneSupplementaire == -1)
+return -1
+endif
+zone_tmp = zone_tmp | zoneSupplementaire
+i++
+enddo
+return zone | zone_tmp
+------
+
+// Zone commune contient initialement la valeur de la case d'où on part
+// (parce qu'elle doit aussi être remplie après tout)
+module(Comment je bouge;x_depart, y_depart, idJoueur, zone_commune;zone_commune)
+---* Comment je bouge
+zone_local = {}
+y = y_depart - 1
+do while(y < y_depart + 1)
+x = x_depart - 1
+do while(x < x_depart + 1)
+if((x,y) not in zone_commune)
+id_case = board.get_case((x,y))
+if(id_case != -1 and id_case != 0 and id_case != idJoueur)
+return -1
+endif
+if(id_case == 0)
+zone_commune.add((x,y))
+zone_local.add((x,y))
+endif
+endif
+enddo
+enddo
+i = 0
+do while(i < zone_local.length)
+module(Comment je bouge;zone_local[i][0], zone_local[i][1], idJoueur, zone_commune;zone_commune)
+if(zone_commune == -1)
+return -1
+endif
+enddo
+return zone_commune
+------
