@@ -1,16 +1,13 @@
 from .player import Player
 class Game:
 
-    def __init__(self, _size_x, _size_y):
-        self._size_x = _size_x
-        self._size_y = _size_y
-        self._players = [Player(1,0,0), Player(2,self._size_x - 1,self._size_y - 1)]
+    def __init__(self, size_x, size_y):
+        self._size_x = size_x
+        self._size_y = size_y
+        self._players = [Player(1,0,0), Player(2,size_x - 1,size_y - 1)]
         self._init_board()
         self._game_over = False
-
-    @property
-    def game_over(self):
-        return self._game_over
+        self._case_left = size_x * size_y
 
     def _init_board(self):
         '''
@@ -32,6 +29,7 @@ class Game:
     def update_case(self, xy, player):
         self._board[xy] = player.id
         player.case_claimed += 1
+        self._case_left -= 1
 
     def validate(self, xy, player):
         case_value = self.get_case(xy)
@@ -39,8 +37,8 @@ class Game:
             return False
         if case_value == 0:
             self.update_case(xy, player)
+            self._zone_finding(xy, player)
 
-        self._zone_finding(xy, player)
         return True
 
     """
@@ -59,7 +57,6 @@ class Game:
             #Border_close is a boolean indicating that there is a border close to the player
             border_close = any([True for row in range(-1,2) if self.get_case((x + delta[0], y + row)) == player.id or x == 0 or x == self._size_x - 1])
             if(border_close):
-                #Warning set don't take iterable args
                 zone_right = self._get_zone((x, y - 1), player.id, set())
                 zone_left = self._get_zone((x, y + 1), player.id, set())
         else:
@@ -75,12 +72,10 @@ class Game:
 
 
     def start_game(self):
-        #Thomas : I removed starting location validation, we can assume that we are not going to put the player on any comprise case at the start
         self.update_case((0,0), self._players[0])
         self.update_case((self._size_x - 1, self._size_y - 1), self._players[1])
     
         while not self._game_over:
-            #Player 1's turn
             self.player_turn(self._players[0])
             self.print_board()
             self.player_turn(self._players[1])
@@ -91,7 +86,7 @@ class Game:
         p_xy = player.move(input("Player {}'s move : ".format(player.id)))
         if self.validate(xy=p_xy, player=player):
             player.xy = p_xy
-        if self._players[0].case_claimed + self._players[1].case_claimed == self._size_x * self._size_y:
+        if self._case_left == 0:
             self._game_over = True
 
     def print_board(self):
@@ -138,7 +133,6 @@ class Game:
                     zone.add((x + delta, y))
             delta = -delta
 
-        print(commun_zone)
         for case in zone:
             commun_zone = self._get_zone(case, id, commun_zone)
             if commun_zone == -1 :
