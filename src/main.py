@@ -1,4 +1,4 @@
 from game_logic.game import Game
 
-game = Game(8, 8)
+game = Game(4, 4)
 print(game.start_game())
