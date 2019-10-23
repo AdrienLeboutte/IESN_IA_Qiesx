@@ -5,9 +5,20 @@ class Game:
         self._size_x = size_x
         self._size_y = size_y
         self._players = [Player(1,0,0), Player(2,size_x - 1,size_y - 1)]
-        self._init_board()
-        self._game_over = False
+        self._board = {}
         self._case_left = size_x * size_y
+        self._turn = 0 #id of the player who is currently playing
+        self._game_state = 0 #
+
+        self._init_board()
+
+    @property
+    def game_state(self):
+        return self._game_state
+
+    @property
+    def game_board(self):
+        return self._board 
 
     def _init_board(self):
         '''
@@ -16,7 +27,6 @@ class Game:
             1 = player one's
             2 = player two's
         '''
-        self._board = {}
         for x in range(0, self._size_x):
             for y in range(0, self._size_y):
                 self._board[(x,y)] = 0
@@ -74,20 +84,27 @@ class Game:
     def start_game(self):
         self.update_case((0,0), self._players[0])
         self.update_case((self._size_x - 1, self._size_y - 1), self._players[1])
-    
-        while not self._game_over:
-            self.player_turn(self._players[0])
-            self.print_board()
-            self.player_turn(self._players[1])
-            self.print_board()
-            
+        self._game_state = 1
+        
+    def player_turn(self, move, player):
+        '''
+        0 if game is not running
+        1 if player played
+        2 if not player turn
+        '''
+        if self._game_state != 1:
+            return 0
+        if player.id == self._turn:
+            return 2
 
-    def player_turn(self, player):
-        p_xy = player.move(input("Player {}'s move : ".format(player.id)))
+        p_xy = player.move(move)
         if self.validate(xy=p_xy, player=player):
             player.xy = p_xy
         if self._case_left == 0:
-            self._game_over = True
+            self._game_state = 2
+
+        self._turn = player.id
+        return 1
 
     def print_board(self):
         for y in range (0, self._size_y):
