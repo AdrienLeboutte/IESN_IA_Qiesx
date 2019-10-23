@@ -8,7 +8,7 @@ class Game:
         self._board = {}
         self._case_left = size_x * size_y
         self._turn = 0 #id of the player who is currently playing
-        self._game_state = 0 #
+        self._game_state = 0 #0 if the game is not running, 1 if the game is running, 2 if the game is over
 
         self._init_board()
 
@@ -19,6 +19,10 @@ class Game:
     @property
     def game_board(self):
         return self._board 
+
+    @property
+    def players(self):
+        return self._players
 
     def _init_board(self):
         '''
