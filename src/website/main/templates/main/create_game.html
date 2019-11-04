@@ -1,0 +1,21 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+    <form action="/create_game/" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="create_game" value="true">
+        <button type="submit">Create Game</button>
+    </form>
+    {% if games %}
+        {% for game in games %}
+            <li>{{ game.player_1.username }}'s game - Status : {{ game.game_state }} </li>
+        {% endfor %}
+    {% endif %}
+</body>
+</html>
