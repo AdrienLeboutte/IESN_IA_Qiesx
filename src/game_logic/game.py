@@ -12,6 +12,7 @@ class Game:
 
         self._init_board()
 
+    '''Properties'''
     @property
     def game_state(self):
         return self._game_state
@@ -24,6 +25,8 @@ class Game:
     def players(self):
         return self._players
 
+
+    '''Methods'''
     def _init_board(self):
         '''
             Method used to initlalize the game board with 0, meaning no cases have been claimed
@@ -84,18 +87,22 @@ class Game:
         if zone_right != -1:
             self._fill_zone(zone_right, player)
 
-
     def start_game(self):
         self.update_case((0,0), self._players[0])
         self.update_case((self._size_x - 1, self._size_y - 1), self._players[1])
         self._game_state = 1
         
+    """
+    Method that allow the player to make his move
+    Args :
+        - move : the direction in which the player want to go
+        - player : the player who is requesting to move
+    Return :
+        0 if the game is not currently running (eg : game_over)
+        1 if the players has finished playing
+        2 if it is not the player's turn
+    """
     def player_turn(self, move, player):
-        '''
-        0 if game is not running
-        1 if player played
-        2 if not player turn
-        '''
         if self._game_state != 1:
             return 0
         if player.id == self._turn:
@@ -161,7 +168,7 @@ class Game:
         return commun_zone
 
     """
-    Method that fill all coord from zone
+    Method that fill all coords from zone
     Args:
         - zone : list of tuples containing coord of the board that can be claimed by a player
         - player : The player who can claimed the case
