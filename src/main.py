@@ -4,6 +4,7 @@ game = Game(8,8)
 game.start_game()
 turn = 0
 players = game.players
+game.print_board()
 
 while(game.game_state != 2):
     player = players[turn%2]
