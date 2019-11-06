@@ -1,7 +1,7 @@
 class Player:
 
     def __init__(self, player_id, start_x, start_y):
-        self._id = str(player_id)
+        self._id = player_id
         self._x = start_x
         self._y = start_y
         self._case_claimed = 0

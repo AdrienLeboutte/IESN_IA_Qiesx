@@ -39,8 +39,6 @@ class Game:
     def get_case(self, xy):
         #Return 0, 1 or 2 if in the limits of the game_board, -1 if out of bound
         index = self.get_case_index(xy)
-        if index == 16:
-            print()
         if index != -1:
             return self._board[index]
         return -1
