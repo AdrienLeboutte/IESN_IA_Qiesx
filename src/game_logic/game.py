@@ -1,10 +1,10 @@
 from .player import Player
 class Game:
 
-    def __init__(self, size_x, size_y):
+    def __init__(self, size_x, size_y, players):
         self._size_x = size_x
         self._size_y = size_y
-        self._players = [Player("1",0,0), Player("2",size_x - 1,size_y - 1)]
+        self._players = players
         self._board = ""
         self._case_left = size_x * size_y
         self._turn = 0 #id of the player who is currently playing
@@ -109,16 +109,16 @@ class Game:
         1 if the players has finished playing
         2 if it is not the player's turn
     """
-    def player_turn(self, move, player):
+    def player_turn(self, player):
         if self._game_state != 1:
             return 0
         if player.id == self._turn:
             return 2
 
-        p_xy = player.move(move)
+        p_xy = player.move()
         if self.validate(p_xy, player):
             player.xy = p_xy
-        if self._case_left == 0:
+        if self._case_left <= 0:
             self._game_state = 2
 
         self._turn = player.id
@@ -147,7 +147,7 @@ class Game:
     def _get_zone(self, xy, id, commun_zone):
         #Check if it is necessary to check that direction in the first place
         id_case = self.get_case(xy)
-        if id_case != "0" and id_case != id:
+        if id_case != "0":
             return -1
         
         #Core
