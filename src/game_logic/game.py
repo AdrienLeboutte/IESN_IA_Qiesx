@@ -1,4 +1,7 @@
+import random
 from .player import Player
+
+
 class Game:
 
     def __init__(self, size_x, size_y, players):
@@ -25,6 +28,9 @@ class Game:
     def players(self):
         return self._players
 
+    @property
+    def state(self):
+        return self._board 
 
     '''Methods'''
     def _init_board(self):
@@ -98,6 +104,11 @@ class Game:
         self.update_case((0,0), self._players[0])
         self.update_case((self._size_x - 1, self._size_y - 1), self._players[1])
         self._game_state = 1
+
+    def get_winner(self):
+        if self._players[0].case_claimed > self._players[1].case_claimed:
+            return self._players[0].id
+        return self._players[1].id
         
     """
     Method that allow the player to make his move
@@ -107,22 +118,23 @@ class Game:
     Return :
         0 if the game is not currently running (eg : game_over)
         1 if the players has finished playing
-        2 if it is not the player's turn
     """
-    def player_turn(self, player):
+    def player_turn(self):
         if self._game_state != 1:
             return 0
-        if player.id == self._turn:
-            return 2
 
+        player = self._players[self._turn]
+        reward = 0
         p_xy = player.move()
         if self.validate(p_xy, player):
             player.xy = p_xy
         if self._case_left <= 0:
             self._game_state = 2
+            id_winner = self.get_winner()
+            reward = 1 if id_winner == self._turn else -1
 
-        self._turn = player.id
-        return 1
+        self._turn = (self._turn + 1)%2
+        return (self._board, reward)
 
     def print_board(self):
         for y in range (0, self._size_y):
@@ -189,3 +201,10 @@ class Game:
     def _fill_zone(self, zone, player):
         for case in zone:
             self.update_case(case, player)
+
+
+    def reset(self):
+        self._board = ""
+        self._case_left = self._size_x * self._size_y
+        self._turn = 0 #id of the player who is currently playing
+        self._game_state = 0 #0 if the game is not running, 1 if the game is running, 2 if the game is over

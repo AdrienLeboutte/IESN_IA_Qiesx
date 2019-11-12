@@ -9,6 +9,7 @@ class Player:
         self._case_claimed = 0
         self._is_human = is_human
         self._is_trainable = is_trainable
+        self._history = []
 
     '''
     Properties and setters defined so we can add extra verification if we want to
@@ -85,4 +86,15 @@ class Player:
             new_y = self._y
         return (new_x, new_y)
 
+    def add_transition(self, transition):
+        self._history.append(transition)
+    
+    def update_transition(self, transition, id):
+        self._history[id] = transition
+
+    def get_transition(self, id):
+        return self._history[id]
+
+    def show_transition(self):
+        print(self._history)
         
