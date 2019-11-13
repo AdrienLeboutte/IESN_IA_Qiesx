@@ -2,14 +2,11 @@ import random
 
 class Player:
 
-    def __init__(self, player_id, start_x, start_y, is_human, is_trainable):
+    def __init__(self, player_id, start_x, start_y):
         self._id = player_id
         self._x = start_x
         self._y = start_y
         self._case_claimed = 0
-        self._is_human = is_human
-        self._is_trainable = is_trainable
-        self._history = []
 
     '''
     Properties and setters defined so we can add extra verification if we want to
@@ -46,14 +43,6 @@ class Player:
     def case_claimed(self, new_nb):
         self._case_claimed = new_nb
 
-    @property
-    def is_human(self):
-        return self._is_human
-
-    @property
-    def is_trainable(self):
-        return self._is_trainable
-
     '''This method is used to increment the number of case claimed by one'''
     def add_one_case(self):
         self._case_claimed += 1
@@ -83,16 +72,4 @@ class Player:
             new_x = self._x
             new_y = self._y
         return (new_x, new_y)
-
-    def add_transition(self, transition):
-        self._history.append(transition)
-    
-    def update_transition(self, transition, id):
-        self._history[id] = transition
-
-    def get_transition(self, id):
-        return self._history[id]
-
-    def show_transition(self):
-        print(self._history)
         
