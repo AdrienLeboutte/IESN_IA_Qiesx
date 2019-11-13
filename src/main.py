@@ -4,8 +4,7 @@ from game_logic.game import Player
 BOARD_SIZE_X = 8
 BOARD_SIZE_Y = 8
 
-
-players_g1 = [Player("1",0,0, False, False), Player("2",BOARD_SIZE_X - 1,BOARD_SIZE_Y - 1, False, False)]
+players_g1 = [Player("1",0,0, True, False), Player("2",BOARD_SIZE_X - 1,BOARD_SIZE_Y - 1, False, False)]
 game = Game(BOARD_SIZE_X,BOARD_SIZE_Y, players_g1)
 game.start_game()
 turn = 0
@@ -14,8 +13,12 @@ game.print_board()
 
 state = game.state
 while(game.game_state != 2):
+    action = None
+    if players[turn%2].is_human:
+        action = input("Player {} >>> ".format(players[turn%2]._id))
+
     players = game.players
-    n_state, reward = game.player_turn()
+    n_state, reward = game.player_turn(action)
 
     if(turn != 0):
         s, sp, r = players[(turn + 1)%2].get_transition(-1)

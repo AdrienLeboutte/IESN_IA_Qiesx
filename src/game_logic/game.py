@@ -119,13 +119,13 @@ class Game:
         0 if the game is not currently running (eg : game_over)
         1 if the players has finished playing
     """
-    def player_turn(self):
+    def player_turn(self, direction):
         if self._game_state != 1:
             return 0
 
         player = self._players[self._turn]
         reward = 0
-        p_xy = player.move()
+        p_xy = player.move(direction)
         if self.validate(p_xy, player):
             player.xy = p_xy
         if self._case_left <= 0:

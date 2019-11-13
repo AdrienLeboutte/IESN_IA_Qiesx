@@ -62,11 +62,9 @@ class Player:
         I don't really know what to do here, we're asking the player what he wants to do but how?
         Feels like an extra layer might be necessary so I'll just use my old method and return the new_x, new_y
     '''
-    def move(self):
+    def move(self, action = None):
         actions = ["up", "right", "down", "left"]
-        if self._is_human:
-            action = input("Player {} >>> ".format(self._id))
-        else:
+        if not self._is_human:
             action = actions[random.randint(0,3)]
 
         if action == "up":
