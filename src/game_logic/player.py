@@ -53,8 +53,6 @@ class Player:
     '''
     def move(self, action = None):
         actions = ["up", "right", "down", "left"]
-        if not self._is_human:
-            action = actions[random.randint(0,3)]
 
         if action == "up":
             new_x = self._x
@@ -73,3 +71,14 @@ class Player:
             new_y = self._y
         return (new_x, new_y)
         
+    def play(self):
+        """
+        ask the player for the move he want to do
+        return: up/down/right/left
+        """
+        correct_answers = ["up", "down", "right", "left"]
+        action = ""
+        while(str.lower(action) not in correct_answers):
+            action = input("Player {} >>> ".format(self._id))
+
+        return action
