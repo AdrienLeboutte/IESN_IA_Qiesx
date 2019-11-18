@@ -14,7 +14,7 @@
     </form>
     {% if games %}
         {% for game in games %}
-            <li>{{ game.player_1.username }}'s game - Status : {{ game.game_state }} </li>
+            <li>{{ game.player_1.username }}'s game - Status : {{ game.game_state }} - ID : {{ game.id }} </li>
         {% endfor %}
     {% endif %}
 </body>

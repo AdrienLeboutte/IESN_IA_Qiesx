@@ -17,8 +17,10 @@
                         <h1 class="mt 2">Qiesx</h1>
                     </div>
                     <div class="col-md-2">
-                        {% if user %}
+                        {% if user.is_active %}
                         <span class="align-middle"><i class="far fa-user"></i> {{ user }}</span>
+                        {% else %}
+                        <span class="align-middle"><a href="/login">Login</a></span>
                         {% endif %}
                     </div>
                 </div>

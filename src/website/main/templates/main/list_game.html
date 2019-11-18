@@ -1,1 +1,8 @@
 {% extends 'base.html' %}
+{% block content%}
+{% if games %}
+{% for game in games %}
+    <li>{{ game.player_1.username }}'s game - Status : {{ game.game_state }} - ID : {{ game.id }} </li>
+{% endfor %}
+{% endif %}
+{% endblock content %}

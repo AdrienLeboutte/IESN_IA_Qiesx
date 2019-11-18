@@ -22,7 +22,16 @@
     </head>
     <body>
         {% csrf_token %}
-        <p id="game_id" value="{{ game_id }}">Your game id is {{ game_id }}</p>
+        <p id="game_id" value="{{ game_id }}">Your game id is {{ game.id }}</p>
+        <p>Game state is {{ game.game_state }}</p>
+        <div>
+            Players in game are :
+            <ul>
+                <li>Owner  : {{ game.player_1.username }}</li>
+                <li>Opennant : {{ game.player_2.username }}</li>
+            </ul>
+        </div>
+        <p>Board is {{ game.board }}</p>
         <div id="canevas">
 
         </div>

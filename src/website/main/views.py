@@ -23,12 +23,18 @@ def create_game(request):
         if request.POST["create_game"] == "true":
             game = models.Game(player_1=request.user)
             game.save()
+            game._init_board()
             views_logger.info("A game was created by user %s", request.user.username)
         else:
             views_logger.warning("Error while creating a game or POST request with missing input field - user %s", request.user.username)
 
     games = models.Game.objects.all()
     return render(request, "main/create_game.html", {'games':games})
+
+def game(request, game_id):
+    game = models.Game.objects.get(id=game_id)
+
+    return render(request, "main/game.html", {"game":game})
 
 def login(request):
     error = False
@@ -51,5 +57,20 @@ def login(request):
 def logging_out(request):
     logout(request)
     return redirect("/")
+
+def list_avalaible_games(request):
+    games = models.Game.objects.filter(game_state=0)
+    return render(request, "main/list_game.html", {"games":games})
+
+def join_game(request, game_id):
+    game = models.Game.objects.get(id=game_id)
+    game.player_2 = request.user
+    game.save()
+    return redirect("/game/" + str(game.id))
+def start_game(request, game_id):
+    game = models.Game.objects.get(id=game_id)
+    game.start_game()
+    return redirect("/game/" + str(game.id))
+
 class HomePageView(TemplateView):
     template_name = "main/homepage.html"
