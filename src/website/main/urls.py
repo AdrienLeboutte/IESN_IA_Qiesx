@@ -19,4 +19,10 @@ from . import views
 urlpatterns = [
     path('login/', views.login),
     path('create_game/', views.create_game),
+    path('', views.HomePageView.as_view()),
+    path('game/<str:game_id>/', views.game),
+    path('logout/', views.logout),
+    path('list_game/', views.list_avalaible_games),
+    path('join_game/<str:game_id>/', views.join_game),
+    path('start_game/<str:game_id>/', views.start_game)
 ]

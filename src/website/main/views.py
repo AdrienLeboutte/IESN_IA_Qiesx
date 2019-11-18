@@ -2,7 +2,9 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+from django.views.generic import TemplateView
 from .utils import generate_code
 from . import forms
 from . import models
@@ -12,8 +14,8 @@ import logging
 sys.path.append("../")
 from game_logic.game import Game
 
-views_logger = logging.Logger("view_logger", 10)
-logging.basicConfig(format='%(asctime)-15s %(message)s')
+views_logger = logging.getLogger(__name__)
+games = {}
 
 @login_required
 def create_game(request):
@@ -21,6 +23,7 @@ def create_game(request):
         if request.POST["create_game"] == "true":
             game = models.Game(player_1=request.user)
             game.save()
+            game._init_board()
             views_logger.info("A game was created by user %s", request.user.username)
         else:
             views_logger.warning("Error while creating a game or POST request with missing input field - user %s", request.user.username)
@@ -28,9 +31,13 @@ def create_game(request):
     games = models.Game.objects.all()
     return render(request, "main/create_game.html", {'games':games})
 
+def game(request, game_id):
+    game = models.Game.objects.get(id=game_id)
+
+    return render(request, "main/game.html", {"game":game})
+
 def login(request):
     error = False
-
     if request.method == "POST":
         form = forms.LoginForm(request.POST)
         if form.is_valid():
@@ -46,3 +53,24 @@ def login(request):
         form = forms.LoginForm()
 
     return render(request, "main/login.html", locals())
+
+def logging_out(request):
+    logout(request)
+    return redirect("/")
+
+def list_avalaible_games(request):
+    games = models.Game.objects.filter(game_state=0)
+    return render(request, "main/list_game.html", {"games":games})
+
+def join_game(request, game_id):
+    game = models.Game.objects.get(id=game_id)
+    game.player_2 = request.user
+    game.save()
+    return redirect("/game/" + str(game.id))
+def start_game(request, game_id):
+    game = models.Game.objects.get(id=game_id)
+    game.start_game()
+    return redirect("/game/" + str(game.id))
+
+class HomePageView(TemplateView):
+    template_name = "main/homepage.html"
