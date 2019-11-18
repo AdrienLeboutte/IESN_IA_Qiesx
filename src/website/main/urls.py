@@ -19,4 +19,6 @@ from . import views
 urlpatterns = [
     path('login/', views.login),
     path('create_game/', views.create_game),
+    path('', views.HomePageView.as_view()),
+    path('logout/', views.logout)
 ]
