@@ -48,6 +48,27 @@ class IA(Player):
         #Si une case est bloquée par exemple
         possible_actions = ["up", "down", "right", "left"]
         action = possible_actions[random.randint(0,3)]
+
+
+        
+
+        """
+        possible_actions = [("up",(0,-1)),("down",(0,1)),("left",(-1,0)),("right",(1,0))]
+            x,y = self._pos
+            #Every logical action (remove out of bound and other player's case actions)
+            actions = [a for a in possible_actions if game.get_case((x + a[1][0], y + a[1][1])) == "0" or game.get_case((x + a[1][0], y + a[1][1])) == str(self._id)]
+            #favor case that has not been taken yet over case that the player has already taken
+            privileged_actions = [a for a in actions if game.get_case((x + a[1][0], y + a[1][1])) == "0"]
+            
+            if len(privileged_actions) != 0:
+                action = privileged_actions[random.randint(0, len(privileged_actions) - 1)][0]
+            else:
+                action = actions[random.randint(0,len(actions) - 1)][0]
+        """
+
+
+
+
         """
         Je laisse tomber pour le moment, tant que je n'ai pas implémenté greedy_step
         if not self._trainable:
