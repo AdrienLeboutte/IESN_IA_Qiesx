@@ -2,7 +2,6 @@ let board;
 let bluePlayerLocation = [0,0];
 let redPlayerLocation = [0,0];
 let csrf_token = $("[name=csrfmiddlewaretoken]")[0].defaultValue;
-
 function drawboard(){
     board = []
     let canevas = document.getElementById("canevas");
@@ -21,8 +20,8 @@ function drawboard(){
 }
 
 function setup(){
-    board[0][0].classList.add("bleu");
-    board[7][7].classList.add("rouge");
+    //board[0][0].classList.add("bleu");
+    //board[7][7].classList.add("rouge");
     document.addEventListener("keypress", movePlayer)
 }
 
@@ -52,13 +51,22 @@ function movePlayer(e){
 
 
 function main(){
-    let board_string = $("#board")[0]["value"]
+    let board_string = $("#board").attr("value")
+
     console.log(board_string)
     drawboard();
     setup();
+    for (let s in board_string) {
+        
+        i = Math.floor(s/8)
+        j = s % 8
+        console.log("s : ", s, " i : ", i, " j : ", j)
+        if (board_string[s] == "1") {
+            board[i][j].classList.add("bleu") 
+        } else if (board_string[s] == "2") {
+            board[i][j].classList.add("rouge")
+        }
+    }
 }
-href_array = window.location.href.split('/');
-game_id = href_array[href_array.length - 1];
-console.log(game_id);
 
 
