@@ -2,6 +2,7 @@ let board;
 let bluePlayerLocation = [0,0];
 let redPlayerLocation = [0,0];
 let csrf_token = $("[name=csrfmiddlewaretoken]")[0].defaultValue;
+
 function drawboard(){
     board = []
     let canevas = document.getElementById("canevas");
@@ -28,7 +29,7 @@ function setup(){
 function movePlayer(e){
     switch (e.charCode){
         case 122 :
-            send_direction("up");
+            bluePlayerLocation[0]--;
             break;
         case 113 :
             bluePlayerLocation[1]--;
@@ -49,28 +50,12 @@ function movePlayer(e){
     }
 }
 
-function touchSide(coord){
-    return coord[0] === 0 || coord[0] === 7 || coord[1] === 0 || coord[1] === 7;
-}
-
-function send_direction(direction) {
-    $.post('/send_direction/', {"game_id":game_id, 
-                                "direction": direction,
-                                "csrfmiddlewaretoken":csrf_token
-                            }, 
-    (response) =>{
-        console.log(response);
-    });
-}
 
 function main(){
+    let board_string = $("#board")[0]["value"]
+    console.log(board_string)
     drawboard();
     setup();
-    $.getJSON("/get_game_state/" + game_id, (data) => {
-        console.log(data);
-        console.log($("#game_state"));
-        $("#game_state").text(data['game_state']);
-    });
 }
 href_array = window.location.href.split('/');
 game_id = href_array[href_array.length - 1];

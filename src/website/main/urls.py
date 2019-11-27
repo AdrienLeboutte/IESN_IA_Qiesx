@@ -21,8 +21,9 @@ urlpatterns = [
     path('create_game/', views.create_game),
     path('', views.HomePageView.as_view()),
     path('game/<str:game_id>/', views.game),
-    path('logout/', views.logout),
-    path('list_game/', views.list_avalaible_games),
+    path('logout/', views.logout, {"next_page": "/"}),
+    path('list_games/', views.list_avalaible_games),
     path('join_game/<str:game_id>/', views.join_game),
-    path('start_game/<str:game_id>/', views.start_game)
+    path('start_game/<str:game_id>/', views.start_game),
+    path('game/<str:game_id>/<str:action>', views.action),
 ]

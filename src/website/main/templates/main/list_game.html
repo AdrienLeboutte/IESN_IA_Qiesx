@@ -2,7 +2,7 @@
 {% block content%}
 {% if games %}
 {% for game in games %}
-    <li>{{ game.player_1.username }}'s game - Status : {{ game.game_state }} - ID : {{ game.id }} </li>
+    <li>{{ game.player_1.username }}'s game - Status : {{ game.game_state }} - ID : <a href="/game/{{ game.id }}">{{ game.id }}</a> <a href="/join_game/{{ game.id }}" class="btn btn-default">Join game</a> </li>
 {% endfor %}
 {% endif %}
 {% endblock content %}

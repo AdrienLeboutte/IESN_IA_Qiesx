@@ -23,7 +23,6 @@ def create_game(request):
         if request.POST["create_game"] == "true":
             game = models.Game(player_1=request.user)
             game.save()
-            game._init_board()
             views_logger.info("A game was created by user %s", request.user.username)
         else:
             views_logger.warning("Error while creating a game or POST request with missing input field - user %s", request.user.username)
@@ -31,10 +30,15 @@ def create_game(request):
     games = models.Game.objects.all()
     return render(request, "main/create_game.html", {'games':games})
 
+@login_required
 def game(request, game_id):
     game = models.Game.objects.get(id=game_id)
+    if request.user == game.player_1 or request.user == game.player_2:
+        return render(request, "main/game.html", {"game":game})
+    else:
+        return render(request, "main/error.html", {"error_type":"You do not have access to this game"})
 
-    return render(request, "main/game.html", {"game":game})
+    
 
 def login(request):
     error = False
@@ -58,18 +62,27 @@ def logging_out(request):
     logout(request)
     return redirect("/")
 
+@login_required
 def list_avalaible_games(request):
     games = models.Game.objects.filter(game_state=0)
     return render(request, "main/list_game.html", {"games":games})
-
+@login_required
 def join_game(request, game_id):
     game = models.Game.objects.get(id=game_id)
     game.player_2 = request.user
     game.save()
     return redirect("/game/" + str(game.id))
+
 def start_game(request, game_id):
     game = models.Game.objects.get(id=game_id)
-    game.start_game()
+    if game.start_game() == -1:
+        return render(request, "main/error.html", {'error_type': 'Missing one player to start the game'})   
+
+    return redirect("/game/" + str(game.id))
+
+def action(request, game_id, action):
+    game = models.Game.objects.get(id=game_id)
+    game.send_direction(action)
     return redirect("/game/" + str(game.id))
 
 class HomePageView(TemplateView):

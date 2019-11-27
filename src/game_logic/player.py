@@ -53,8 +53,8 @@ class Player:
     '''
     def move(self, action = None):
         actions = ["up", "right", "down", "left"]
-        if not self._is_human:
-            action = actions[random.randint(0,3)]
+        # if not self._is_human:
+        #     action = actions[random.randint(0,3)]
 
         if action == "up":
             new_x = self._x
