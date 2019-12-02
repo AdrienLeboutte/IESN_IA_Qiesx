@@ -17,11 +17,11 @@ from django.contrib import admin
 from django.urls import path
 from . import views
 urlpatterns = [
-    path('login/', views.login),
+    path('login/', views.login_view),
     path('create_game/', views.create_game),
-    path('', views.HomePageView.as_view()),
+    path('', views.HomePageView.as_view(), name="homepage"),
     path('game/<str:game_id>/', views.game),
-    path('logout/', views.logout, {"next_page": "/"}),
+    path('logout/', views.logout_view),
     path('list_games/', views.list_avalaible_games),
     path('join_game/<str:game_id>/', views.join_game),
     path('start_game/<str:game_id>/', views.start_game),

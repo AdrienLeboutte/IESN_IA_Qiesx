@@ -1,21 +1,14 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
-<body>
-    
+{% extends 'base.html' %}
+{% block content %}
     <form action="/create_game/" method="POST">
         {% csrf_token %}
         <input type="hidden" name="create_game" value="true">
-        <button type="submit">Create Game</button>
+        <button type="submit" class="btn btn-primary">Create Game</button>
     </form>
+    <h3>My games</h3>
     {% if games %}
         {% for game in games %}
-            <li>{{ game.player_1.username }}'s game - Status : {{ game.game_state }} - ID : {{ game.id }} </li>
+            <li>{{ game.player_1.username }}'s game - Status : {{ game.game_state }} - ID : {{ game.id }} - <a href="/game/{{ game.id }}/" class="btn btn-primary">Join game</a> </li>
         {% endfor %}
     {% endif %}
-</body>
-</html>
+{% endblock content %}

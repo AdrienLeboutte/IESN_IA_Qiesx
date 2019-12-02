@@ -32,11 +32,15 @@ class Game(models.Model):
         self.game_state = 1
         self.save()
         return 0
-    def send_direction(self, action):
+    def send_direction(self, action, user):
+        if not self.id in game_servers:
+            return 5001
+        player_turn = game_servers[self.id]._turn
+        if (player_turn == 0 and user.id == self.player_1.id) or (player_turn == 1 and user.id == self.player_2.id):
+            game_servers[self.id].player_turn(action)
+            self.board = game_servers[self.id].game_board
+            self.save()
+            logger.info("Direction were sent - UUID : %s", self.id) 
+
         
-        game_servers[self.id].player_turn(action)
-        game_servers[self.id].print_board()
-        self.board = game_servers[self.id].game_board
-        self.save()
-        logger.info("Direction were sent - UUID : %s", self.id) 
 

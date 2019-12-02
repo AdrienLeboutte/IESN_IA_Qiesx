@@ -1,16 +1,12 @@
 from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
-from django.contrib.auth import authenticate
-from django.contrib.auth import login as auth_login
-from django.contrib.auth import logout
+from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 from .utils import generate_code
 from . import forms
 from . import models
-import json
-import sys
-import logging
+import json, sys, logging
 sys.path.append("../")
 from game_logic.game import Game
 
@@ -27,7 +23,7 @@ def create_game(request):
         else:
             views_logger.warning("Error while creating a game or POST request with missing input field - user %s", request.user.username)
 
-    games = models.Game.objects.all()
+    games = models.Game.objects.filter(player_1__id=request.user.id)
     return render(request, "main/create_game.html", {'games':games})
 
 @login_required
@@ -40,7 +36,7 @@ def game(request, game_id):
 
     
 
-def login(request):
+def login_view(request):
     error = False
     if request.method == "POST":
         form = forms.LoginForm(request.POST)
@@ -50,7 +46,7 @@ def login(request):
             user = authenticate(username=username, password=password)
 
             if user:
-                auth_login(request, user)
+                login(request, user)
             else:
                 error = True
     else:
@@ -58,7 +54,7 @@ def login(request):
 
     return render(request, "main/login.html", locals())
 
-def logging_out(request):
+def logout_view(request):
     logout(request)
     return redirect("/")
 
@@ -82,7 +78,7 @@ def start_game(request, game_id):
 
 def action(request, game_id, action):
     game = models.Game.objects.get(id=game_id)
-    game.send_direction(action)
+    game.send_direction(action, request.user)
     return redirect("/game/" + str(game.id))
 
 class HomePageView(TemplateView):
