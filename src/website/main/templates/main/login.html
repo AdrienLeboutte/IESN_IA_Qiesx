@@ -3,7 +3,9 @@
 {% block content %}
     <h1>Se connecter</h1>
     {% if error %}
-        <p><strong>Utilisateur inconnu ou mauvais de mot de passe.</strong></p>
+        <div class="alert alert-danger" role="alert">
+            Utilistaeur inconnu ou mot de passe incorrect !
+        </div>
     {% endif %}
 
     {% if user.is_authenticated %}

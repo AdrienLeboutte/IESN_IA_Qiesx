@@ -20,7 +20,7 @@
     {% endblock head %}
     {% block content %}
                 {% csrf_token %}
-        <p id="game_id" value="{{ game_id }}">Your game id is {{ game.id }}</p>
+        <p id="game_id" value="{{ game.id }}">Your game id is {{ game.id }}</p>
         <p>Game state is {{ game.game_state }}</p>
         <div>
             Players in game are :

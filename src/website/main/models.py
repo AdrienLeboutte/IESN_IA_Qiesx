@@ -1,10 +1,20 @@
+"""
+In order to use the game logic written on a seperate source we must import the module
+It is stored in the constant "PATH_TO_GAME_LOGIC"
+This obviously varies to where you have installed your archive
+"""
+PATH_TO_GAME_LOGIC = "D:\\GitHub\\mp_qix_iesn\\src\\"
+#Importing essentials
 from django.db import models
 from django.contrib.auth.models import User
 import uuid
 import sys
-sys.path.append("../")
+#Importing game logic
+sys.path.append(PATH_TO_GAME_LOGIC)
 from game_logic.game import Game as Logic_Game
 from game_logic.player import Player
+
+#Setting up loggers
 import logging
 logger = logging.getLogger(__name__)
 
@@ -40,7 +50,10 @@ class Game(models.Model):
             game_servers[self.id].player_turn(action)
             self.board = game_servers[self.id].game_board
             self.save()
-            logger.info("Direction were sent - UUID : %s", self.id) 
+            logger.info("Direction were sent - UUID : %s", self.id)
+
+    def get_board(self):
+        return game_servers[self.id].game_board
 
         
 

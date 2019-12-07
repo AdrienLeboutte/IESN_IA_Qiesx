@@ -2,6 +2,7 @@ let board;
 let bluePlayerLocation = [0,0];
 let redPlayerLocation = [0,0];
 let csrf_token = $("[name=csrfmiddlewaretoken]")[0].defaultValue;
+let game_socket;
 function drawboard(){
     board = []
     let canevas = document.getElementById("canevas");
@@ -26,47 +27,59 @@ function setup(){
 }
 
 function movePlayer(e){
-    switch (e.charCode){
-        case 122 :
-            bluePlayerLocation[0]--;
+    switch (e.code){
+        case "KeyW" :
+            game_socket.send(JSON.stringify({direction:"up"}))
             break;
-        case 113 :
-            bluePlayerLocation[1]--;
+        case "KeyS" :
+            game_socket.send(JSON.stringify({direction:"down"}))
             break;
-        case 115 :
-            bluePlayerLocation[0]++;
+        case "KeyA" :
+            game_socket.send(JSON.stringify({direction:"left"}))
             break;
-        case 100 :
-            bluePlayerLocation[1]++;
+        case "KeyD" :
+            game_socket.send(JSON.stringify({direction:"right"}))
             break;
         default :
             console.log("invalid key");
             break;
-    }
-    board[bluePlayerLocation[0]][bluePlayerLocation[1]].classList.add("bleu");
-    if(touchSide(bluePlayerLocation)){
-        colorZone()
     }
 }
 
 
 function main(){
     let board_string = $("#board").attr("value")
-
+    let game_id = $("#game_id").attr("value")
     console.log(board_string)
+    console.log(game_id)
     drawboard();
     setup();
     for (let s in board_string) {
         
         i = Math.floor(s/8)
         j = s % 8
-        console.log("s : ", s, " i : ", i, " j : ", j)
         if (board_string[s] == "1") {
             board[i][j].classList.add("bleu") 
         } else if (board_string[s] == "2") {
             board[i][j].classList.add("rouge")
         }
     }
+    game_socket = new WebSocket(`ws://localhost:8000/ws/game/${game_id}/`)
+    game_socket.onmessage = function(e) {
+        data = JSON.parse(e.data)
+        board_string = data["board"]
+        for (let s in board_string) {
+            i = Math.floor(s/8)
+            j = s % 8
+            if (board_string[s] == "1") {
+                board[i][j].classList.add("bleu") 
+            } else if (board_string[s] == "2") {
+                board[i][j].classList.add("rouge")
+            }
+        }
+    }
+    
+    
 }
 
 
