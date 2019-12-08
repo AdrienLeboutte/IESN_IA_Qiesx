@@ -83,3 +83,25 @@ def action(request, game_id, action):
 
 class HomePageView(TemplateView):
     template_name = "main/homepage.html"
+
+def sign_up_view(request):
+    error = []
+    if request.method == "POST":
+        form = forms.LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
+            password_confirm = form.cleaned_data["password_confirm"]
+            email = form.cleaned_data["email"]
+            first_name = form.cleaned_data["first_name"]
+            last_name = form.cleaned_data["last_name"]
+            if not password == password_confirm:
+                error.append("password_not_equals")
+            if not username:
+                error.append("no_username")
+            if not email:
+                error.append("no_email")
+    else:
+        form = forms.LoginForm()
+
+    return render(request, "main/login.html", locals())

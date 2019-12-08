@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block container %}
+        <form method="post" action=".">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-primary">Sign up</button>
+        </form>
+{% endblock container %}
