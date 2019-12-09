@@ -7,6 +7,8 @@ class Player:
         self._x = start_x
         self._y = start_y
         self._case_claimed = 0
+        self._start_x = start_x
+        self._start_y = start_y
 
     '''
     Properties and setters defined so we can add extra verification if we want to
@@ -43,6 +45,10 @@ class Player:
     def case_claimed(self, new_nb):
         self._case_claimed = new_nb
 
+    def reset_player(self):
+        self._x = self._start_x
+        self._y = self._start_y
+        
     '''This method is used to increment the number of case claimed by one'''
     def add_one_case(self):
         self._case_claimed += 1
