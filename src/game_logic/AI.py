@@ -42,38 +42,49 @@ class IA(Player):
     def add_transition(self, transition):
         self._history.append(transition)
     
-    
-    def play(self):
-        #Archaïque pour le moment mais les actions possibles ne seront pas toujours celles ci
-        #Si une case est bloquée par exemple
-        possible_actions = ["up", "down", "right", "left"]
-        action = possible_actions[random.randint(0,3)]
-
-
-        
-
-        """
+    def greedy_step(self, game):
         possible_actions = [("up",(0,-1)),("down",(0,1)),("left",(-1,0)),("right",(1,0))]
-            x,y = self._pos
-            #Every logical action (remove out of bound and other player's case actions)
-            actions = [a for a in possible_actions if game.get_case((x + a[1][0], y + a[1][1])) == "0" or game.get_case((x + a[1][0], y + a[1][1])) == str(self._id)]
-            #favor case that has not been taken yet over case that the player has already taken
-            privileged_actions = [a for a in actions if game.get_case((x + a[1][0], y + a[1][1])) == "0"]
+        v_max = 0
+        vi = None
+
+        for i in range(len(possible_actions)):
+            a = possible_actions[i][1]
+            temp_board = game
+            is_valid = temp_board.validate(a, temp_board._players[temp_board._turn])
             
+            if is_valid:                
+                if temp_board.game_board in self.V:
+                    if v_max < self.V[temp_board.game_board]:
+                        v_max = self.V[temp_board.game_board]
+                        vi = i
+            
+        return possible_actions[vi if vi is not None else 0]
+
+
+    def play(self, game):
+        possible_actions = [("up",(0,-1)),("down",(0,1)),("left",(-1,0)),("right",(1,0))]
+        #Every logical action (remove out of bound and other player's case actions)
+        actions = [a for a in possible_actions if game.get_case((self._x + a[1][0], self._y + a[1][1])) == "0" or game.get_case((self._x + a[1][0], self._y + a[1][1])) == str(self._id)]
+        #favor case that has not been taken yet over case that the player has already taken
+        privileged_actions = [a for a in actions if game.get_case((self._x + a[1][0], self._y + a[1][1])) == "0"]
+            
+        if self._trainable:
+            if random.uniform(0,1) < self.eps:
+                #Exploration
+                if len(privileged_actions) != 0:
+                    action = privileged_actions[random.randint(0, len(privileged_actions) - 1)][0]
+                else:
+                    action = possible_actions[random.randint(0,len(possible_actions)-1)][0]
+            else:
+                #Exploitation
+                action = self.greedy_step(game)
+        else:
+            #"Randomly" computed player sem-intelligente
             if len(privileged_actions) != 0:
                 action = privileged_actions[random.randint(0, len(privileged_actions) - 1)][0]
             else:
-                action = actions[random.randint(0,len(actions) - 1)][0]
-        """
+                action = possible_actions[random.randint(0,len(actions) - 1)][0]
 
-
-
-
-        """
-        Je laisse tomber pour le moment, tant que je n'ai pas implémenté greedy_step
-        if not self._trainable:
-            action = possible_actions[random.randint(0,3)]
-        """
         return action
 
 
@@ -91,7 +102,7 @@ class IA(Player):
                 else:
                     self._V[s] = self._V[s] + self._lr*(r - self._V[s])
 
-                    
+        self._history = []         
     #Inutile selon moi car la transition que l'on modifira sera toujours la dernière enregistrée 
     # self._history[-1]
     def update_transition(self, transition, id=-1):

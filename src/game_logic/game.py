@@ -64,12 +64,14 @@ class Game:
 
     def validate(self, xy, player):
         case_value = self.get_case(xy)
+        nb_case_find = 1
         if case_value != player.id and case_value != "0":
             return False
         if case_value == "0":
             self.update_case(xy, player)
-            self._zone_finding(xy, player)
+            nb_case_find += self._zone_finding(xy, player)
 
+        #Pas oublier le nb_case_find
         return True
 
     """
@@ -98,8 +100,12 @@ class Game:
 
         if zone_left != -1:
             self._fill_zone(zone_left, player)
+            return len(zone_left)
         if zone_right != -1:
             self._fill_zone(zone_right, player)
+            return len(zone_right)
+
+        return 1
 
     def start_game(self):
         self.update_case((0,0), self._players[0])
@@ -127,12 +133,15 @@ class Game:
         player = self._players[self._turn]
         reward = 0
         p_xy = player.move(direction)
-        if self.validate(p_xy, player):
+        #Je fais ça pour pouvoir récompenser en fn des cases ocucpées. (voir validate)
+        is_validate = self.validate(p_xy, player)
+        if is_validate:
             player.xy = p_xy
         if self._case_left <= 0:
+            #Partie finie
             self._game_state = 2
             id_winner = self.get_winner()
-            reward = 1 if id_winner == self._turn else -1
+            reward = 50 if id_winner == self._turn else 50
 
         self._turn = (self._turn + 1)%2
         return (self._board, reward)
@@ -210,3 +219,5 @@ class Game:
         self._init_board()
         self._turn = 0 #id of the player who is currently playing
         self._game_state = 0 #0 if the game is not running, 1 if the game is running, 2 if the game is over
+        self._players[0].reset_player()
+        self._players[1].reset_player()
