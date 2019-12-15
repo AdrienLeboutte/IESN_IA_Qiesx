@@ -68,6 +68,11 @@ function main(){
     game_socket.onmessage = function(e) {
         data = JSON.parse(e.data)
         board_string = data["board"]
+        console.log(data)
+        console.log(data["player_positions"]);
+        pos = data["player_positions"];
+        $('.bleu_player').removeClass("bleu_player")
+        $('.rouge_player').removeClass("rouge_player")
         for (let s in board_string) {
             i = Math.floor(s/8)
             j = s % 8
@@ -77,6 +82,8 @@ function main(){
                 board[i][j].classList.add("rouge")
             }
         }
+        board[pos[0][1]][pos[0][0]].classList.add("bleu_player")
+        board[pos[1][1]][pos[1][0]].classList.add("rouge_player")
     }
     
     

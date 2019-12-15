@@ -25,7 +25,7 @@ game_servers = {}
 
 class Game(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    board = models.CharField(max_length=50, default="")
+    board = models.CharField(default="", max_length=2500)
     size_x = models.IntegerField(default=8)
     size_y = models.IntegerField(default=8)
     game_state = models.IntegerField(default=0)
@@ -35,6 +35,11 @@ class Game(models.Model):
     def start_game(self):
         if self.player_2 == None:
             return -1
+        """
+        TODO:
+        - Make sure ID is unique when adding to the DB
+        - Reload the games that crashed when server is restarted
+        """
         game_servers[self.id] = Logic_Game(self.size_x, self.size_y, [Player(str(1),0,0), Player(str(2),self.size_x-1, self.size_y-1)])
         game_servers[self.id].start_game()
         logger.info("A game was started - UUID : %s", self.id)
@@ -54,6 +59,12 @@ class Game(models.Model):
 
     def get_board(self):
         return game_servers[self.id].game_board
+
+    def get_player_position(self):
+        if not (self.id in game_servers):
+            return ((0,0),(self.size_x - 1, self.size_y - 1))
+        player_1, player_2 = game_servers[self.id].players
+        return player_1.xy, player_2.xy
 
         
 

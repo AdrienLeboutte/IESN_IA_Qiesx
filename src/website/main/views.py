@@ -3,6 +3,7 @@ from django.http import JsonResponse, HttpResponse
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
+from django.contrib.auth.forms import UserCreationForm
 from .utils import generate_code
 from . import forms
 from . import models
@@ -76,32 +77,28 @@ def start_game(request, game_id):
 
     return redirect("/game/" + str(game.id))
 
+"""
+This function is a legacy way of sending action to a game
+It does not use nor interact with the websocket therefore it is incompatible with current code
+It's here for documentation purposes
+
 def action(request, game_id, action):
     game = models.Game.objects.get(id=game_id)
     game.send_direction(action, request.user)
     return redirect("/game/" + str(game.id))
-
+"""
 class HomePageView(TemplateView):
     template_name = "main/homepage.html"
 
 def sign_up_view(request):
-    error = []
     if request.method == "POST":
-        form = forms.LoginForm(request.POST)
+        form = UserCreationForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data["username"]
-            password = form.cleaned_data["password"]
-            password_confirm = form.cleaned_data["password_confirm"]
-            email = form.cleaned_data["email"]
-            first_name = form.cleaned_data["first_name"]
-            last_name = form.cleaned_data["last_name"]
-            if not password == password_confirm:
-                error.append("password_not_equals")
-            if not username:
-                error.append("no_username")
-            if not email:
-                error.append("no_email")
+            user  = form.save()
+            return redirect("/login")
+        else:
+            views_logger.warning("Error while signing up someone")
+            return render(request, 'main/signup.html', locals())
     else:
-        form = forms.LoginForm()
-
-    return render(request, "main/login.html", locals())
+        form = forms.SignUpForm()
+        return render(request, 'main/signup.html', {'form':form})

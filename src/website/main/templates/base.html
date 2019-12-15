@@ -43,13 +43,14 @@
                 </ul>
             {% else %}
                 <span class="align-middle"><a href="/login">Login</a></span>
+                <span class="align-middle">-</span>
+                <span class="align-middle"><a href="/signup">Sign Up</a></span>
             {% endif %}
         </div>
     </nav>
-    <div class="container">
+    <div class="container mt-2">
         <div class="row justify-content-center">
             <div class="col-8">
-                <hr class="mt-0 mb-4">
                 {% block content %}
                 {% endblock content %}
             </div>

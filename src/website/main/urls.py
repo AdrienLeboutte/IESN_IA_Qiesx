@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from . import views
 urlpatterns = [
-    path('login/', views.login_view),
+    path('login/', views.login_view, name="login_view"),
     path('create_game/', views.create_game),
     path('', views.HomePageView.as_view(), name="homepage"),
     path('game/<str:game_id>/', views.game),
@@ -25,5 +25,5 @@ urlpatterns = [
     path('list_games/', views.list_avalaible_games),
     path('join_game/<str:game_id>/', views.join_game),
     path('start_game/<str:game_id>/', views.start_game),
-    path('game/<str:game_id>/<str:action>', views.action),
+    path('signup/', views.sign_up_view, name="signup_view")
 ]
