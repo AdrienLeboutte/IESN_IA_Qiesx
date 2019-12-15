@@ -90,8 +90,8 @@ def play_human(ai_v = {}):
 if __name__ == "__main__":
     if os.path.exists("ai_v.dat"):
         ai_v = pickle.load(open("ai_v.dat", "rb"))
-        training = input("train ? (y/n)") == 'y'
-        if training:
+        train = input("train ? (y/n)") == 'y'
+        if train:
             training(ai1_v = ai_v)
         else:
             play_human(ai_v = ai_v)
