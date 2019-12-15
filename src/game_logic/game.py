@@ -8,12 +8,12 @@ class Game:
         self._size_x = size_x
         self._size_y = size_y
         self._players = players
-        self._board = ""
-        self._case_left = size_x * size_y
-        self._turn = 0 #id of the player who is currently playing
+        self._nb_cases = size_x * size_y
+        self._case_left = self._nb_cases
+        self._turn = random.randint(0,1) #id of the player who is currently playing
         self._game_state = 0 #0 if the game is not running, 1 if the game is running, 2 if the game is over
-
-        self._init_board()
+        
+        self._board = self._init_board()
 
     '''Properties'''
     @property
@@ -32,6 +32,14 @@ class Game:
     def state(self):
         return self._board 
 
+    @property
+    def size_y(self):
+        return self._size_y
+
+    @property
+    def turn(self):
+        return self._turn
+
     '''Methods'''
     def _init_board(self):
         '''
@@ -40,8 +48,8 @@ class Game:
             1 = player one's
             2 = player two's
         '''
-        self._board = ""
-        self._board += "0" * (self._size_x * self._size_y)
+        self._case_left -= 2
+        return "1" + ("0" * (self._nb_cases - 2)) + "2" + ";0;" + str(self._nb_cases - 1)
     
     def get_case(self, xy):
         #Return 0, 1 or 2 if in the limits of the game_board, -1 if out of bound
@@ -57,10 +65,15 @@ class Game:
         return -1
 
     def update_case(self, xy, player):
-        changing_case = self.get_case_index(xy)
-        self._board = self._board[:changing_case] + player.id + self._board[changing_case + 1:]
-        player.case_claimed += 1
-        self._case_left -= 1
+        case_value = self.get_case(xy)
+        if case_value == "0":
+            splitted_board = self._board.split(';')
+            state = splitted_board[0]
+            index = self.get_case_index(xy)
+            splitted_board[0] = state[:index] + str(player.id) + state[index + 1:]
+            self._board = ';'.join(splitted_board)
+            self._case_left -= 1
+            player.case_claimed += 1
 
     def validate(self, xy, player):
         case_value = self.get_case(xy)
@@ -69,6 +82,7 @@ class Game:
             return False
         if case_value == "0":
             self.update_case(xy, player)
+            self.update_player_position_on_board(xy, player.id)
             nb_case_find += self._zone_finding(xy, player)
 
         #Pas oublier le nb_case_find
@@ -105,7 +119,7 @@ class Game:
             self._fill_zone(zone_right, player)
             return len(zone_right)
 
-        return 1
+        return 0
 
     def start_game(self):
         self.update_case((0,0), self._players[0])
@@ -130,8 +144,8 @@ class Game:
         if self._game_state != 1:
             return 0
 
-        player = self._players[self._turn]
         reward = 0
+        player = self._players[self._turn]
         p_xy = player.move(direction)
         #Je fais ça pour pouvoir récompenser en fn des cases ocucpées. (voir validate)
         is_validate = self.validate(p_xy, player)
@@ -140,8 +154,7 @@ class Game:
         if self._case_left <= 0:
             #Partie finie
             self._game_state = 2
-            id_winner = self.get_winner()
-            reward = 50 if id_winner == self._turn else 50
+            reward = player.case_claimed - self._players[(self._turn + 1) % 2].case_claimed
 
         self._turn = (self._turn + 1)%2
         return (self._board, reward)
@@ -214,10 +227,15 @@ class Game:
 
 
     def reset(self):
-        self._board = ""
+        self._board = self._init_board()
         self._case_left = self._size_x * self._size_y
         self._init_board()
-        self._turn = 0 #id of the player who is currently playing
+        self._turn = random.randint(0,1) #id of the player who is currently playing
         self._game_state = 0 #0 if the game is not running, 1 if the game is running, 2 if the game is over
         self._players[0].reset_player()
         self._players[1].reset_player()
+
+    def update_player_position_on_board(self, xy, player_id):
+        splitted_board = self._board.split(';')
+        splitted_board[int(player_id)] = str(self.get_case_index(xy))
+        self._board = ';'.join(splitted_board)

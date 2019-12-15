@@ -48,6 +48,7 @@ class Player:
     def reset_player(self):
         self._x = self._start_x
         self._y = self._start_y
+        self._case_claimed = 0
         
     '''This method is used to increment the number of case claimed by one'''
     def add_one_case(self):
