@@ -69,7 +69,7 @@ def training(ai1_v = {}, ai2_v = {}, n = 10000):
     game = Game(BOARD_SIZE_X,BOARD_SIZE_Y, players_g1)
     for i in range(n):
         if i % 1000 == 0:
-            print("%s - %d " % datetime.now(tz=None), i)
+            print("%s - %d " % (datetime.now(tz=None), i))
 
         if(i % 1000 == 0):
             players_g1[0]._eps = max(players_g1[0]._eps * 0.996, 0.05)
