@@ -36,25 +36,44 @@ class GameConsummer(AsyncWebsocketConsumer):
         game.send_direction(direction, self.user)
         player_positions = game.get_player_position()
         board = game.get_board()
-        logger.info("Board is : %s" % board)
-        await self.channel_layer.group_send(
-            self.game_group_id, 
-            {
-                'type':'game.update',
-                'board':board,
-                'player_positions': player_positions
-            }
-        )
+        if game.game_state == "2":
+            logger.info("The game %s is over!" % game.id)
+            logger.info("Winner is : %s" % game.get_winner())
+            await self.channel_layer.group_send(
+                self.game_group_id,
+                {
+                    'type':'game.update',
+                    'board':board,
+                    'player_positions': player_positions,
+                    'status':game.game_state,
+                    'winner':game.get_winner()
+                }
+            )
+        else:
+            await self.channel_layer.group_send(
+                self.game_group_id, 
+                {
+                    'type':'game.update',
+                    'board':board,
+                    'player_positions': player_positions,
+                    'status':game.game_state,
+                    'winner':None,
+                }
+            )
         
 
     async def game_update(self, event):
         logger.info("A game update was sent")
         board = event['board']
         player_positions = event['player_positions']
+        status = event['status']
+        winner = event['winner']
 
         await self.send(text_data=json.dumps({
             'board':board,
-            'player_positions':player_positions
+            'player_positions':player_positions,
+            'status':status,
+            'winner':winner,
         }))
 
     

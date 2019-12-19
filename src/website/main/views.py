@@ -63,12 +63,18 @@ def logout_view(request):
 def list_avalaible_games(request):
     games = models.Game.objects.filter(game_state=0)
     return render(request, "main/list_game.html", {"games":games})
+
 @login_required
 def join_game(request, game_id):
     game = models.Game.objects.get(id=game_id)
-    game.player_2 = request.user
-    game.save()
-    return redirect("/game/" + str(game.id))
+    if request.user == game.player_1:
+        return redirect("/game/" + str(game.id))
+    elif game.player_2:
+        return redirect("/game/" + str(game.id))
+    else:
+        game.player_2 = request.user
+        game.save()
+        return redirect("/game/" + str(game.id))
 
 def start_game(request, game_id):
     game = models.Game.objects.get(id=game_id)

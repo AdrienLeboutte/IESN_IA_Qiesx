@@ -1,3 +1,7 @@
 .col-md-2 {
     background-color: red;
 }
+
+body {
+    padding-top: 65px;
+}

@@ -1,51 +1,58 @@
 {% extends 'base.html' %}
-    {% block head %}
-        <style>
-            table{
-                border: 1px solid black;
-                border-collapse:collapse;
-            }
-            table td{
-                border: 1px solid black;
-                width: 50px;
-                height:50px; 
-            }
-            .bleu{
-                background-color: blue;
-            }
-            .rouge{
-                background-color: red;
-            }
-            .bleu_player{
-                background-color: rgb(66, 135, 245)
-            }
-            .rouge_player{
-                background-color: rgb(99, 13, 13)
-            }
-        </style>
-    {% endblock head %}
-    {% block content %}
-                {% csrf_token %}
-        <p id="game_id" value="{{ game.id }}">Your game id is {{ game.id }}</p>
-        <p>Game state is {{ game.game_state }}</p>
-        <div>
-            Players in game are :
-            <ul>
-                <li>Owner  : {{ game.player_1.username }}</li>
-                <li>Opennant : {{ game.player_2.username }}</li>
-            </ul>
-        </div>
-        
-            <a href="/start_game/{{ game.id }}/" class="btn btn-primary">Start game</a>
-        
-        <p id="board" value="{{game.board}}">Board is {{ game.board }}</p>
-        <div id="canevas">
+{% block head %}
+<style>
+    table {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
 
-        </div>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-    {% load static %}
-    <script type="text/javascript" src="{% static 'assets/js/jscode.js' %}"></script>
-    <script>
-        main();
-    </script>
-    {% endblock content %}
+    table td {
+        border: 1px solid black;
+        width: 50px;
+        height: 50px;
+    }
+
+    .bleu {
+        background-color: blue;
+    }
+
+    .rouge {
+        background-color: red;
+    }
+
+    .bleu_player {
+        background-color: rgb(66, 135, 245)
+    }
+
+    .rouge_player {
+        background-color: rgb(99, 13, 13)
+    }
+</style>
+{% endblock head %}
+{% block content %}
+{% csrf_token %}
+<div id="infos">
+    <p id="game_id" value="{{ game.id }}">Your game id is {{ game.id }}</p>
+    <p>Game state is {{ game.game_state }}</p>
+    <div>
+        Players in game are :
+        <ul>
+            <li>Owner : {{ game.player_1.username }}</li>
+            <li>Opennant : {{ game.player_2.username }}</li>
+        </ul>
+    </div>
+
+    <a href="/start_game/{{ game.id }}/" class="btn btn-primary">Start game</a>
+
+    <p id="board" value="{{game.board}}">Board is {{ game.board }}</p>
+</div>
+<div id="canevas">
+
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+{% load static %}
+<script type="text/javascript" src="{% static 'assets/js/jscode.js' %}"></script>
+<script>
+    main();
+</script>
+{% endblock content %}
