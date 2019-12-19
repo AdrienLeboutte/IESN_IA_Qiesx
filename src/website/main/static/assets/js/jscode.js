@@ -55,7 +55,7 @@ function main(){
     console.log(game_id)
     drawboard();
     setup();
-    drawFromString(board_string);
+    drawFromString(board_string.split(";")[0]);
     host_path = `${window.location.hostname}:${window.location.port}`
     game_socket = new WebSocket(`ws://${host_path}/ws/game/${game_id}/`);
     game_socket.onmessage = socketMessage;  
@@ -80,7 +80,7 @@ function socketMessage(e) {
     pos = data["player_positions"];
     $('.bleu_player').removeClass("bleu_player");
     $('.rouge_player').removeClass("rouge_player");
-    drawFromString(board_string)
+    drawFromString(board_string.split(";")[0])
     board[pos[0][1]][pos[0][0]].classList.add("bleu_player");
     board[pos[1][1]][pos[1][0]].classList.add("rouge_player");
     if (data["status"] == "2") {

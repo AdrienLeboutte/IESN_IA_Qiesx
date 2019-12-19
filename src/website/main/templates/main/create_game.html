@@ -3,6 +3,7 @@
     <form action="/create_game/" method="POST">
         {% csrf_token %}
         <input type="hidden" name="create_game" value="true">
+        <input type="checkbox" name="IA">Against AI?</input>
         <button type="submit" class="btn btn-primary">Create Game</button>
     </form>
     <h3>My games</h3>

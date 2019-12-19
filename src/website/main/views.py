@@ -18,9 +18,14 @@ games = {}
 def create_game(request):
     if request.method == "POST":
         if request.POST["create_game"] == "true":
-            game = models.Game(player_1=request.user)
-            game.save()
-            views_logger.info("A game was created by user %s", request.user.username)
+            if ("IA" in request.POST and request.POST["IA"] == "on"):
+                game = models.Game(player_1=request.user, is_IA=True)
+                game.save()
+                game.start_game()
+            else:
+                game = models.Game(player_1=request.user, is_IA=False)
+                game.save()
+                views_logger.info("A game was created by user %s", request.user.username)
         else:
             views_logger.warning("Error while creating a game or POST request with missing input field - user %s", request.user.username)
 

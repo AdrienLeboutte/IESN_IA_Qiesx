@@ -6,8 +6,6 @@ class LoginForm(forms.Form):
     username = forms.CharField(label= "Username", required=True, max_length=50)
     password = forms.CharField(label="Password", required=False, widget=forms.PasswordInput)
 
-class DirectionForm(forms.Form):
-    direction = forms.CharField(label="Direction", required=True)
 
 class SignUpForm(UserCreationForm):
     email = forms.EmailField(required=True)

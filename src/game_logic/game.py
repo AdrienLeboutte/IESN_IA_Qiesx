@@ -10,7 +10,7 @@ class Game:
         self._players = players
         self._nb_cases = size_x * size_y
         self._case_left = self._nb_cases
-        self._turn = random.randint(0,1) #id of the player who is currently playing
+        self._turn = 0 #id of the player who is currently playing
         self._game_state = 0 #0 if the game is not running, 1 if the game is running, 2 if the game is over
         
         self._board = self._init_board()
@@ -62,6 +62,7 @@ class Game:
         x, y = xy
         if x >= 0 and x < self._size_x and y >= 0 and y < self._size_y:
             return x + y * self._size_y
+
         return -1
 
     def update_case(self, xy, player):
