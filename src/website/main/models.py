@@ -5,7 +5,7 @@ This obviously varies to where you have installed your archive
 """
 #PATH_TO_GAME_LOGIC = "H:\\GitHub\\mp_qix_iesn\\src\\"
 #PATH_TO_IAV = "..\\..\\ai_v.dat"
-PATH_TO_GAME_LOGIC = "/home/whusky/mp_qix_iesn/src/"
+PATH_TO_GAME_LOGIC = "/home/whusky/github/mp_qix_iesn/src/"
 PATH_TO_IAV = "../../ai_v.dat"
 #Importing essentials
 from django.db import models
