@@ -3,8 +3,10 @@ In order to use the game logic written on a seperate source we must import the m
 It is stored in the constant "PATH_TO_GAME_LOGIC"
 This obviously varies to where you have installed your archive
 """
-PATH_TO_GAME_LOGIC = "H:\\GitHub\\mp_qix_iesn\\src\\"
-PATH_TO_IAV = "..\\..\\ai_v.dat"
+#PATH_TO_GAME_LOGIC = "H:\\GitHub\\mp_qix_iesn\\src\\"
+#PATH_TO_IAV = "..\\..\\ai_v.dat"
+PATH_TO_GAME_LOGIC = "/home/whusky/mp_qix_iesn/src/"
+PATH_TO_IAV = "../../ai_v.dat"
 #Importing essentials
 from django.db import models
 from django.contrib.auth.models import User
