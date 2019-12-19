@@ -3,7 +3,7 @@ import random
 
 class IA(Player):
     
-    def __init__(self, player_id, start_x, start_y, epsilon=0.99, learning_rate=0.00001, is_trainable=True):
+    def __init__(self, player_id, start_x, start_y, epsilon=0.99, learning_rate=0.0000000001, is_trainable=True):
         Player.__init__(self, player_id, start_x, start_y)
         self._trainable = is_trainable
         self._V = {}
@@ -20,6 +20,9 @@ class IA(Player):
 
     #@V.setter
     #Setter ici ? Pour avoir plus facile à ajouter les nouveaux états
+    @V.setter
+    def V(self, new_v):
+        self._V = new_v
 
     @property
     def eps(self):
@@ -44,21 +47,27 @@ class IA(Player):
     
     def greedy_step(self, game):
         possible_actions = [("up",(0,-1)),("down",(0,1)),("left",(-1,0)),("right",(1,0))]
-        v_max = 0
+        actions = [a for a in possible_actions if game.get_case((self._x + a[1][0], self._y + a[1][1])) == "0" or game.get_case((self._x + a[1][0], self._y + a[1][1])) == str(self._id)]
+        v_min = None
         vi = None
 
-        for i in range(len(possible_actions)):
-            a = possible_actions[i][1]
-            temp_board = game
-            is_valid = temp_board.validate(a, temp_board._players[temp_board._turn])
+        for i in range(len(actions)):
+            a = actions[i][1]
+            next_player_pos = (self._x + a[0], self._y + a[1])
+        
+            splitted_board = game.game_board.split(";")
+            state = splitted_board[0]
+            i_next_player_pos = next_player_pos[0] + next_player_pos[1] * game.size_y
+            splitted_board[0] = state[:i_next_player_pos] + str(self._id) + state[i_next_player_pos + 1:]
+            splitted_board[game.turn + 1] = str(i_next_player_pos)
+            next_state = ';'.join(splitted_board)
+
+            if next_state in self.V:
+                if v_min is None or v_min > self.V[next_state] :
+                    v_min = self.V[next_state]
+                    vi = i
             
-            if is_valid:                
-                if temp_board.game_board in self.V:
-                    if v_max < self.V[temp_board.game_board]:
-                        v_max = self.V[temp_board.game_board]
-                        vi = i
-            
-        return possible_actions[vi if vi is not None else 0]
+        return actions[vi if vi is not None else 0]
 
 
     def play(self, game):
@@ -77,7 +86,7 @@ class IA(Player):
                     action = possible_actions[random.randint(0,len(possible_actions)-1)][0]
             else:
                 #Exploitation
-                action = self.greedy_step(game)
+                action = self.greedy_step(game)[0]
         else:
             #"Randomly" computed player sem-intelligente
             if len(privileged_actions) != 0:
@@ -90,28 +99,26 @@ class IA(Player):
 
     def train(self):
         if self.is_trainable:
-            for transition in reversed(self._history):
+            for i, transition in enumerate(reversed(self._history)):
                 s, sp, r = transition
                 if(not s in self._V):
                     self._V[s] = 0
-                if(not sp in self._V):
+                if(sp is not None and not sp in self._V):
                     self._V[sp] = 0
 
-                if(r == 0):
+                if(i != 0):
                     self._V[s] = self._V[s] + self._lr*(self._V[sp] - self._V[s])
                 else:
                     self._V[s] = self._V[s] + self._lr*(r - self._V[s])
 
         self._history = []         
-    #Inutile selon moi car la transition que l'on modifira sera toujours la dernière enregistrée 
-    # self._history[-1]
+ 
+
     def update_transition(self, transition, id=-1):
         self._history[id] = transition
 
-    #La aussi je doute de la légitimité de cette fonction    
     def get_transition(self, id=-1):
         return self._history[id]
 
-    #Pareil
     def show_transition(self):
         print(self._history)
