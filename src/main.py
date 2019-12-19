@@ -80,7 +80,7 @@ def training(ai1_v = {}, ai2_v = {}, n = 10000):
     return ai1.V
 
 def play_human(ai_v = {}):   
-    ai1 = IA("1", 0,0)
+    ai1 = IA("1", 0,0, epsilon=0)
     ai1.V = ai_v
     p1 = Player("2", BOARD_SIZE_X - 1,BOARD_SIZE_Y - 1)
     players = [ai1, p1]
@@ -93,9 +93,11 @@ if __name__ == "__main__":
         ai_v = pickle.load(open("ai_v.dat", "rb"))
         train = input("train ? (y/n)") == 'y'
         if train:
-            training(ai1_v = ai_v)
+            ai_v = training(ai1_v = ai_v)
+            pickle.dump(ai_v, open("ai_v.dat", "wb"))
         else:
             play_human(ai_v = ai_v)
+        
     else:
         ai = training(n = 5000)
         pickle.dump(ai, open("ai_v.dat", "wb"))
