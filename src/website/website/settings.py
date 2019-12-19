@@ -25,7 +25,11 @@ SECRET_KEY = 'bk2or+4g5=uaalv51-vq0mv+m8y&!nqqv2ps*e21t4zoku9#*y'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'thewhitehusky.me',
+    'localhost',
+    '127.0.0.1'
+]
 
 
 # Application definition
