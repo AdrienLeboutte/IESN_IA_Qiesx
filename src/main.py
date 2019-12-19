@@ -1,3 +1,4 @@
+from datetime import datetime
 from game_logic.game import Game
 from game_logic.game import Player
 from game_logic.AI import IA
@@ -68,9 +69,9 @@ def training(ai1_v = {}, ai2_v = {}, n = 10000):
     game = Game(BOARD_SIZE_X,BOARD_SIZE_Y, players_g1)
     for i in range(n):
         if i % 1000 == 0:
-            print(i)
+            print("%s - %d " % datetime.now(tz=None), i)
 
-        if(i % 10 == 0):
+        if(i % 1000 == 0):
             players_g1[0]._eps = max(players_g1[0]._eps * 0.996, 0.05)
             players_g1[1]._eps = max(players_g1[1]._eps * 0.996, 0.05)
         

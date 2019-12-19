@@ -3,7 +3,7 @@ import random
 
 class IA(Player):
     
-    def __init__(self, player_id, start_x, start_y, epsilon=0.99, learning_rate=0.0000000001, is_trainable=True):
+    def __init__(self, player_id, start_x, start_y, epsilon=0.99, learning_rate=0.0000001, is_trainable=True):
         Player.__init__(self, player_id, start_x, start_y)
         self._trainable = is_trainable
         self._V = {}
